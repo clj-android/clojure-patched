@@ -3,7 +3,7 @@ plugins {
     `maven-publish`
 }
 
-group = "org.clojure-android"
+group = "com.goodanser.clj-android"
 version = "1.12.0-1"
 description = "Clojure 1.12.0 with Android-aware classloader in RT.makeClassLoader()"
 
@@ -63,7 +63,7 @@ configurations {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "org.clojure-android"
+            groupId = "com.goodanser.clj-android"
             artifactId = "clojure"
             version = project.version.toString()
             artifact(repackageJar)
