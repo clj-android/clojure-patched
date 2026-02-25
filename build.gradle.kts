@@ -1,5 +1,5 @@
 plugins {
-    java
+    `java-library`
     `maven-publish`
 }
 
@@ -25,6 +25,12 @@ val stockClojure: Configuration by configurations.creating {
 dependencies {
     compileOnly("org.clojure:clojure:1.12.0")
     stockClojure("org.clojure:clojure:1.12.0")
+
+    // Declare the same transitive dependencies as stock Clojure 1.12.0.
+    // These are needed both for Maven publishing (pom.withXml below) and
+    // for Gradle composite builds (includeBuild) where the POM isn't used.
+    api("org.clojure:spec.alpha:0.5.238")
+    api("org.clojure:core.specs.alpha:0.4.74")
 }
 
 // The default `jar` task produces only our compiled RT.class.
