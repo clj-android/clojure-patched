@@ -59,10 +59,22 @@ configurations {
     named("runtimeElements") {
         outgoing.artifacts.clear()
         outgoing.artifact(repackageJar)
+        // AGP prefers the secondary "classes" variant (java-classes-directory)
+        // over the primary JAR.  Replace its artifact with the repackaged JAR
+        // so AGP gets the complete Clojure runtime regardless of which variant
+        // it selects.
+        outgoing.variants.named("classes") {
+            artifacts.clear()
+            artifact(repackageJar)
+        }
     }
     named("apiElements") {
         outgoing.artifacts.clear()
         outgoing.artifact(repackageJar)
+        outgoing.variants.named("classes") {
+            artifacts.clear()
+            artifact(repackageJar)
+        }
     }
 }
 
