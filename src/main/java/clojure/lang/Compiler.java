@@ -5385,7 +5385,13 @@ static public class ObjExpr implements Expr{
 				gen.getStatic(Type.getType(PersistentHashSet.class),"EMPTY",Type.getType(PersistentHashSet.class));
 			else
 				{
-				emitListAsObjectArray(vs, gen);
+				// BEGIN clj-android patch: sort set elements for reproducible AOT builds.
+				List sortedElements = new ArrayList();
+				for(; vs != null; vs = vs.next())
+					sortedElements.add(vs.first());
+				sortedElements.sort(java.util.Comparator.comparing(e -> String.valueOf(e)));
+				emitListAsObjectArray(sortedElements, gen);
+				// END clj-android patch
 				gen.invokeStatic(Type.getType(PersistentHashSet.class), Method.getMethod(
 					"clojure.lang.PersistentHashSet create(Object[])"));
 				}
