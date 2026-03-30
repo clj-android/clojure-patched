@@ -5343,12 +5343,20 @@ static public class ObjExpr implements Expr{
 			}
 		else if(value instanceof IPersistentMap)
 			{
+			// BEGIN clj-android patch: sort map entries for reproducible AOT builds.
+			// Without sorting, iteration order depends on key hashCode() values,
+			// which are non-deterministic for Class objects and other types that
+			// inherit Object.hashCode().  Sorting by String.valueOf(key) produces
+			// stable bytecode regardless of JVM identity hashes.
+			List<Map.Entry> sortedEntries = new ArrayList<Map.Entry>(((Map) value).entrySet());
+			sortedEntries.sort(java.util.Comparator.comparing(e -> String.valueOf(((Map.Entry) e).getKey())));
 			List entries = new ArrayList();
-			for(Map.Entry entry : (Set<Map.Entry>) ((Map) value).entrySet())
+			for(Map.Entry entry : sortedEntries)
 				{
 				entries.add(entry.getKey());
 				entries.add(entry.getValue());
 				}
+			// END clj-android patch
 			emitListAsObjectArray(entries, gen);
 			gen.invokeStatic(RT_TYPE,
 							 Method.getMethod("clojure.lang.IPersistentMap map(Object[])"));
